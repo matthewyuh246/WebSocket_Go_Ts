@@ -7,10 +7,13 @@ import (
 
 	"github.com/matthewyuh246/websocket/src/domain"
 	"github.com/matthewyuh246/websocket/src/handlers"
+	"github.com/matthewyuh246/websocket/src/services"
 )
 
 func main() {
-	hub := domain.NewHub()
+	pubsub := services.NewPubSubService()
+	hub := domain.NewHub(pubsub)
+	go hub.SubscribeMessages()
 	go hub.RunLoop()
 
 	http.HandleFunc("/ws", handlers.NewWebsocketHandler(hub).Handle)
